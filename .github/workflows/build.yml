@@ -1,0 +1,38 @@
+name: Deploy GitHub Pages
+
+concurrency:
+  group: "pages-deploy"
+  cancel-in-progress: true
+
+on:
+  push:
+    branches:
+      - main  # hoặc nhánh bạn muốn deploy
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Build static site
+        run: |
+          mkdir -p dist
+          echo "<h1>🚀 Hello from GitHub Pages via Actions</h1>" > dist/index.html
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
